@@ -1,0 +1,42 @@
+---
+# tasks file for project.apache2
+- name: Update repositories cache and install apache2
+  ansible.builtin.apt:
+    name: apache2
+    state: present
+    update_cache: true
+
+- name: Generate main configuration file
+  template:
+    src: templates/apache2.conf.j2
+    dest: /etc/apache2/apache2.conf
+    mode: 0644
+  notify: Restart apache2
+
+- name: Generate VirtualHosts configuration file for apache2
+  template:
+    src: templates/vhost.conf.j2
+    dest: /etc/apache2/sites-available/{{ item.ServerName }}.conf
+    mode: 0644
+  notify: Restart apache2
+  with_items: "{{ apache2.VirtualHosts }}"
+
+- name: Create home directory for VirtualHosts
+  file:
+    path: /var/www/{{ item.ServerName }}
+    state: directory
+  with_items: "{{ apache2.VirtualHosts }}"
+  
+- name: Enable sites
+  ansible.builtin.shell:
+    cmd: "a2ensite {{ item.ServerName }}"
+  when: item.Enabled
+  notify: Restart apache2
+  with_items: "{{ apache2.VirtualHosts }}"
+
+- name: Disable sites
+  ansible.builtin.shell:
+    cmd: "test -e /etc/apache2/sites-enabled/{{ item.ServerName }}.conf && a2ensite {{ item.ServerName }} || exit 0"
+  when: item.Enabled == False
+  notify: Restart apache2
+  with_items: "{{ apache2.VirtualHosts }}"

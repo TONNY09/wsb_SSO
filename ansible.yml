@@ -1,0 +1,5 @@
+- name: Projekt_dev
+  hosts: projekt_dev
+  become: true
+  roles:
+    - project.apache2

@@ -1,5 +1,7 @@
+---
+# defaults file for project.apache2
 apache2:
-  Timeout: 350
+  Timeout: 300
   KeepAlive: "On"
   MaxKeepAliveRequests: 100
   KeepAliveTimeout: 5
@@ -7,11 +9,7 @@ apache2:
   LogLevel: "warn"
   AccessFileName: ".htaccess"
   VirtualHosts:
-  - ServerName: "www.projekt.dev"
-    ServerAlias: "projekt.dev"
-    Address: "*:80"
-    Enabled: True
-  - ServerName: "www.projekt2.dev"
-    ServerAlias: "projekt2.dev"
+  - ServerName: "www.default.local"
+    ServerAlias: "default.local"
     Address: "*:80"
     Enabled: False
