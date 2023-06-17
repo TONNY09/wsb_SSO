@@ -25,6 +25,9 @@
   file:
     path: /var/www/{{ item.ServerName }}
     state: directory
+    mode: 0777
+    owner: www-data
+    group: www-data
   with_items: "{{ apache2.VirtualHosts }}"
   
 - name: Enable sites

@@ -1,0 +1,10 @@
+---
+# handlers file for project.ftp
+- name: Generate db
+  command: pure-pw mkdb
+  notify: Restart pure-ftpd
+
+- name: Restart pure-ftpd
+  ansible.builtin.systemd:
+    state: restarted
+    name: pure-ftpd

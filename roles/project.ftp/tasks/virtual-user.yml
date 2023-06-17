@@ -1,0 +1,8 @@
+---
+- name: Create virtual FTP user {{ item.name }}
+  expect:
+    command: pure-pw useradd {{ item.name }} -u ftpuser -g ftpgroup -d {{ item.dir }} -m
+    responses:
+      (?i)password: "{{ item.password }}"
+      (?i)enter it again: "{{ item.password }}"
+  notify: Generate db

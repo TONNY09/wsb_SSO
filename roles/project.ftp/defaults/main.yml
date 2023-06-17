@@ -1,0 +1,10 @@
+---
+# defaults file for project.ftp
+pureftpd_users:
+  - name: test1
+    dir: /var/www/www.projekt2.dev
+    password: "TestoweHaslorazdwatrzy"
+
+pure_ftpd_user: "ftpuser"
+pure_ftpd_group: "ftpgroup"
+pure_ftpd_root: "/var/www"

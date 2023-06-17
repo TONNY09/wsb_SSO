@@ -1,0 +1,15 @@
+- name: Add once /sbin/nologin to allow authorization through ftp
+  shell: echo /sbin/nologin >> /etc/shells
+
+- name: Add once /usr/sbin/nologin to allow authorization through ftp
+  shell: echo /usr/sbin/nologin >> /etc/shells
+
+- name: Create directory for facts
+  file:
+    path: /etc/ansible/facts.d/
+    state: directory
+
+- name: Register fact, that nologin was added
+  copy:
+    src: files/fact
+    dest: /etc/ansible/facts.d/nologin_added.fact

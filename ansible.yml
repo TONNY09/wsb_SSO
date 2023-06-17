@@ -3,3 +3,4 @@
   become: true
   roles:
     - project.apache2
+    - project.ftp

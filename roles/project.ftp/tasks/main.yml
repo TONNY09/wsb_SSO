@@ -1,0 +1,55 @@
+---
+# tasks file for project.ftp
+- name: Update repositories cache and install pure-ftpd
+  ansible.builtin.apt:
+    name: pure-ftpd
+    state: present
+    update_cache: true
+
+- name: Generate main configuration file
+  template:
+    src: templates/pure-ftpd.conf.j2
+    dest: /etc/pure-ftpd/pure-ftpd.conf
+    mode: 0644
+  notify: Restart pure-ftpd
+
+- name: Create the FTP system group '{{ pure_ftpd_group }}'
+  group: name={{ pure_ftpd_group }} state=present
+
+- name: Create the FTP system user '{{ pure_ftpd_user }}'
+  ansible.builtin.user: 
+    name: "{{ pure_ftpd_user }}"
+    group: "{{ pure_ftpd_group }}"
+    home: /dev/null
+    shell: /sbin/nologin
+    state: present
+
+- name: Create FTP server root directory '{{ pure_ftpd_root }}'
+  file: 
+    dest: "{{ pure_ftpd_root }}"
+    mode: 0755
+    state: directory
+    owner: "{{ pure_ftpd_user }}"
+    group: "{{ pure_ftpd_group }}"
+
+- name: Check if nologin was added to valid shells file
+  stat:
+    path: /etc/ansible/facts.d/nologin_added.fact
+  register: nologin_fact
+
+- include: register-shells.yml
+  when: not nologin_fact.stat.exists
+
+- name: Remove old passwd file
+  ansible.builtin.file: 
+    path: /etc/pure-ftpd/pureftpd.passwd
+    state: absent
+
+- include: virtual-user.yml
+  with_items: "{{ pureftpd_users }}"
+
+- name: Create symbolic link for DB connections
+  ansible.builtin.file:
+    src: /etc/pure-ftpd/conf/PureDB
+    dest: /etc/pure-ftpd/auth/50PureDB
+    state: link

@@ -14,4 +14,13 @@ apache2:
   - ServerName: "www.projekt2.dev"
     ServerAlias: "projekt2.dev"
     Address: "*:80"
-    Enabled: False
+    Enabled: True
+
+
+pureftpd_users:
+  - name: test
+    dir: /var/www/www.projekt.dev
+    password: "razdwatrzy"
+  - name: test2
+    dir: /var/www/www.projekt2.dev
+    password: "czterypiecszesc"
